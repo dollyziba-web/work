@@ -142,6 +142,24 @@
   animation: slowKenBurns 18s ease-out alternate infinite;
 }
 
+/* Subtle Perpetual Floating & Ambient Breathing for Featured Imagery */
+@keyframes subtleImageFloat {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.008);
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+}
+
+.float-subtle-image {
+  animation: subtleImageFloat 6.5s ease-in-out infinite alternate !important;
+  will-change: transform;
+}
+
 /* --------------------------------------------------------------------------
    4. ACCESSIBILITY: REDUCED MOTION
    -------------------------------------------------------------------------- */

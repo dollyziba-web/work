@@ -5,7 +5,7 @@
 
 document.documentElement.classList.add('js-enabled');
 
-document.addEventListener('DOMContentLoaded', () => {
+function initZeeMain() {
   if (window.__zeeMainInitialized) return;
   window.__zeeMainInitialized = true;
   // --------------------------------------------------------------------------
@@ -133,4 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const yearEls = document.querySelectorAll('.current-year');
   const currentYear = new Date().getFullYear();
   yearEls.forEach(el => el.textContent = currentYear);
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initZeeMain);
+} else {
+  initZeeMain();
+}

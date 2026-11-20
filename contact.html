@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="css/components.css?v=2.0">
   <link rel="stylesheet" href="css/animations.css?v=2.0">
   <link rel="stylesheet" href="css/pages.css?v=2.0">
-  <base id="zee-base" href="./">
+  <base id="zee-base" href="/">
   <script id="zee-base-script">
     (function() {
       var b = document.getElementById('zee-base');
@@ -32,7 +32,7 @@
         var repo = (segments.length > 0 && !segments[0].includes('.')) ? '/' + segments[0] + '/' : '/';
         b.setAttribute('href', window.location.origin + repo);
       } else {
-        b.setAttribute('href', './');
+        b.setAttribute('href', '/');
       }
     })();
   </script>

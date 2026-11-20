@@ -18,12 +18,27 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
+  console.log(`[REQUEST] ${req.method} ${req.url}`);
   let reqUrl = req.url.split('?')[0];
-  if (reqUrl.startsWith('/porta/')) reqUrl = reqUrl.replace('/porta', '');
-  if (reqUrl.startsWith('/port/')) reqUrl = reqUrl.replace('/port', '');
-  if (reqUrl === '/porta' || reqUrl === '/port' || reqUrl === '/' || reqUrl === '') reqUrl = '/index.html';
 
-  const filePath = path.join(__dirname, reqUrl);
+  // Strip subpath prefixes if accessed through /work/, /porta/, or /port/
+  reqUrl = reqUrl.replace(/^\/(work|porta|port)(\/|$)/, '/');
+
+  if (reqUrl === '/' || reqUrl === '') {
+    reqUrl = '/index.html';
+  }
+
+  let filePath = path.join(__dirname, reqUrl);
+
+  // If file doesn't exist directly, check if appending .html matches (clean URLs)
+  if (!fs.existsSync(filePath) && fs.existsSync(filePath + '.html')) {
+    filePath = filePath + '.html';
+  }
+
+  // If path is a directory, check for index.html inside it
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+    filePath = path.join(filePath, 'index.html');
+  }
 
   // Security check: ensure path is within directory
   if (!filePath.startsWith(__dirname)) {
