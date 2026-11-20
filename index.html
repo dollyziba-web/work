@@ -1516,6 +1516,24 @@ ul, ol {
   }
 }
 
+/* Subtle Perpetual Floating & Ambient Breathing for Featured Imagery */
+@keyframes subtleImageFloat {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.008);
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+}
+
+.float-subtle-image {
+  animation: subtleImageFloat 6.5s ease-in-out infinite alternate !important;
+  will-change: transform;
+}
+
 /* Words preserve whitespace properly */
 .anim-word {
   display: inline-block;
@@ -3216,5 +3234,68 @@ ul, ol {
   <!-- JavaScript Modules -->
   <script src="js/main.js?v=2.0"></script>
   <script src="js/hero-anim.js?v=2.0"></script>
+  <script>
+    (function() {
+      // 1. Reveal observer for scroll animations on images and text
+      document.documentElement.classList.add('js-enabled');
+      var revealEls = document.querySelectorAll('.reveal');
+      if (revealEls.length && 'IntersectionObserver' in window) {
+        var obs = new IntersectionObserver(function(entries, observer) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -40px 0px', threshold: 0.1 });
+        revealEls.forEach(function(el) { obs.observe(el); });
+      } else {
+        revealEls.forEach(function(el) { el.classList.add('is-revealed'); });
+      }
+
+      // 2. Letter-level rising and floating animation on headline
+      var headline = document.querySelector('.hero-letter-anim');
+      if (headline && !headline.dataset.animReady) {
+        headline.dataset.animReady = 'true';
+        var fullText = headline.textContent.trim();
+        headline.setAttribute('aria-label', fullText);
+        var words = fullText.split(' ');
+        headline.innerHTML = '';
+        headline.setAttribute('aria-hidden', 'true');
+        var letterIdx = 0;
+        var floatSet = new Set([3, 8, 14, 22, 28, 35]);
+
+        words.forEach(function(w, wI) {
+          var wSpan = document.createElement('span');
+          wSpan.className = 'anim-word';
+          Array.from(w).forEach(function(ch) {
+            var lSpan = document.createElement('span');
+            lSpan.className = 'anim-letter';
+            lSpan.textContent = ch;
+            var d = 0.2 + (letterIdx * 0.038);
+            lSpan.style.animationDelay = d.toFixed(3) + 's';
+            if (floatSet.has(letterIdx)) {
+              lSpan.classList.add('float-subtle');
+              var fd = d + 0.85 + (letterIdx * 0.08);
+              lSpan.style.animationDelay = d.toFixed(3) + 's, ' + fd.toFixed(3) + 's';
+            }
+            wSpan.appendChild(lSpan);
+            letterIdx++;
+          });
+          headline.appendChild(wSpan);
+          if (wI < words.length - 1) {
+            headline.appendChild(document.createTextNode(' '));
+          }
+        });
+      }
+
+      // 3. Subtle floating on featured images
+      var featuredImgs = document.querySelectorAll('.editorial-frame img, .signature-card img, .hero-experience-badge');
+      featuredImgs.forEach(function(img, i) {
+        img.classList.add('float-subtle-image');
+        img.style.animationDelay = (i * 0.4).toFixed(2) + 's';
+      });
+    })();
+  </script>
 </body>
 </html>
