@@ -22,12 +22,19 @@
   <link rel="stylesheet" href="css/components.css?v=2.0">
   <link rel="stylesheet" href="css/animations.css?v=2.0">
   <link rel="stylesheet" href="css/pages.css?v=2.0">
-  <base id="zee-base" href="https://dollyziba-web.github.io/porta/">
+  <base id="zee-base" href="./">
   <script id="zee-base-script">
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    (function() {
       var b = document.getElementById('zee-base');
-      if (b) b.setAttribute('href', '/');
-    }
+      if (!b) return;
+      if (window.location.hostname.includes('github.io')) {
+        var segments = window.location.pathname.split('/').filter(Boolean);
+        var repo = (segments.length > 0 && !segments[0].includes('.')) ? '/' + segments[0] + '/' : '/';
+        b.setAttribute('href', window.location.origin + repo);
+      } else {
+        b.setAttribute('href', './');
+      }
+    })();
   </script>
   <style id="zee-inline-styles">
 /* ==========================================================================
